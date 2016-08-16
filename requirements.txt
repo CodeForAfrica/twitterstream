@@ -7,3 +7,4 @@ Flask
 Flask-Script
 pika
 celery
+gunicorn
