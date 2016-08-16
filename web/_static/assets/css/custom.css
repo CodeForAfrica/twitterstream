@@ -1,0 +1,15 @@
+footer {
+    bottom:0px;
+    position:absolute;
+    width:100%;
+
+}
+button {
+    width:100%;
+    border-radius:none;
+}
+
+.jumbotron {
+    background-color:#0D68A8;
+    color:#fff;
+}

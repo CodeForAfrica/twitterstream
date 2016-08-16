@@ -6,9 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
+    <link rel="icon" type="image/ico" href="assets/img/favicon.ico">
     <title>Twitterstream</title>
     <!-- Bootstrap Core CSS -->
     <link href="assets/css/bootstrap.min.css" rel="stylesheet">
+    <link href="assets/css/custom.css" rel="stylesheet">
     <!-- Custom CSS -->
     <link href="assets/css/heroic-features.css" rel="stylesheet">
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -24,10 +26,6 @@
         <div class="container">
             <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
                 <a class="navbar-brand" href="/">Twitterstream</a>
             </div>
             <!-- Collect the nav links, forms, and other content for toggling -->
@@ -39,38 +37,61 @@
     <div class="container">
 
         <!-- Jumbotron Header -->
-        <header class="jumbotron hero-spacer">
-        <h3>Twitterstream [Beta]: Harvest content from Twitter by user or hashtag</h3>
-            </p>
-            </header>
+        <header class="jumbotron hero-spacer text-center">
+            <h3>Twitterstream [Beta]: Harvest tweets from Twitter by user or hashtag</h3>
+        </header>
 
-            <div class="row">
-              <div class="col-lg-6">
+        <div class="row">
+            <div class="col-md-offset-2 col-lg-8 col-md-8 col-sm-12 col-md-offset-2">
                 <div class="input-group">
-                  <div class="input-group-btn">
-                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Select filter <span class="caret"></span></button>
-                    <ul class="dropdown-menu">
-                      <li><a href="#">Track hashtags</a></li>
-                      <li><a href="#">Track users</a></li>
-                    </ul>
-                  </div><!-- /btn-group -->
-                  <input type="text" placeholder="#Rio,#Olympics" class="form-control" aria-label="...">
+                    <div class="input-group-btn">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Select filter <span class="caret"></span></button>
+                        <ul class="dropdown-menu">
+                            <li><a href="#">Track hashtags</a></li>
+                            <li><a href="#">Track users</a></li>
+                        </ul>
+                    </div><!-- /btn-group -->
+                    <input type="text" placeholder="#Rio,#Olympics" class="form-control" aria-label="...">
                 </div><!-- /input-group -->
             </div><!-- /.col-lg-6 -->
-
-            <button type="button" class="btn btn-primary">Run</button>
-
-
+            <!--<button type="button" class="btn btn-primary">Run</button>-->
+        </div>
+        <br clear="all">
+        <div class="row">
+            <div class="col-md-offset-5 col-md-2 col-md-offset-5">
+                <button type="button" class="btn btn-primary">Run</button>
             </div>
- 
+        </div>
 
-        <hr>
+        <br clear="all">
+        <div class="row">
+            <div class=" col-md-offset-2 col-md-8 col-md-offset-2 col-sm-12" >
+                <div class="alert alert-success hide" role="alert">
+                    <strong>Well done!</strong>
+                    <a href="#">Here's the link to your spreadsheet of tweets</a>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-offset-2 col-md-8 col-md-offset-2 col-sm-12">
+                <div class="alert alert-danger hide" role="alert">
+                    <strong>Oops!</strong>
+                    There appears to be something wrong. Please try again later.
+                </div>
+            </div>
+        </div>
+
+
 
         <!-- Footer -->
         <footer>
+            <div class="row"><hr></div>
             <div class="row">
-                <div class="col-lg-12">
+                <div class="col-lg-4 col-md-4 col-sm-12">
                     <p>Code For Africa Tech Labs (2016)</p>
+                </div>
+                <div class="col-md-offset-4 col-lg-4 col-md-4 col-sm-12">
+                    <img src="assets/img/cfafrica-logo.png" height="50px"/>
                 </div>
             </div>
         </footer>
