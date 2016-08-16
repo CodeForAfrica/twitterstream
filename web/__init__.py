@@ -2,6 +2,7 @@
 Flask app
 """
 import os
+import requests
 from flask import (Flask, g, request, session, redirect,
                    url_for, render_template, jsonify)
 from flask_script import Manager
@@ -33,8 +34,18 @@ def stream():
     '''
     '''
     args = request.args.copy()
-    print args
-    print "*" * 30
+    remote_ip = request.environ["REMOTE_ADDR"]
+
+    # verify captcha
+    request_args = dict(response=args["g-recaptcha-response"], remoteip=remote_ip, secret=app.config["RECAPTCHA"]["secret_key"])
+    resp = requests.post(app.config["RECAPTCHA"]["verify_url"], request_args)
+    print "RECAPTCHA:  %s - %s" % (resp.status_code, resp.json())
+    resp.raise_for_status()
+    if resp.json()["success"]:
+        pass
+    else:
+        return render_template("index.html", source="fail")
+
     return render_template("index.html", source="stream")
 
 

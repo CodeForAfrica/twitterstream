@@ -43,23 +43,34 @@
             <h3>Twitterstream [Beta]: Harvest tweets from Twitter by user or hashtag</h3>
         </header>
 
+        <form action="{{ url_for('stream') }}">
         <div class="row">
             <div class="col-md-offset-2 col-lg-8 col-md-8 col-sm-12 col-md-offset-2">
                 <div class="input-group">
                     <label for="basic-url">Hashtag to stream</label>
                     <div class="input-group">
                       <span class="input-group-addon" id="basic-addon3">#</span>
-                      <input type="text" class="form-control" id="basic-url" aria-describedby="basic-addon3">
+                      <input type="text" class="form-control" name="hashtag" id="basic-url" aria-describedby="basic-addon3">
                   </div>
 
                   <br clear="all">
+                  {% if source == "home" %}
                   <div class="g-recaptcha" data-sitekey="6LeHwScTAAAAAKDGNgdgrRSmXnAc9Ngu0wsPOqWX"></div>
+                  {% endif %}
                   <br clear="all">
                     {% if source == "home" %}
-                    <a href="/stream" <button type="button" class="btn btn-primary btn-lg">Run</button></a>
+                    <input type="submit" class="btn btn-primary btn-lg" value="Run"/>
+
+                    {% elif source == "fail" %}
+                    <a href="/stream" <button type="button" class="btn btn-primary btn-lg disabled">Run</button></a>
+                    </form>
+                    <div class="alert alert-danger" role="alert">
+                        <a href="/" class="alert-link"> Oh snap! Failed at the captcha. Try again? </a>
+                    </div>
+
                     {% else %}
                     <a href="/stream" <button type="button" class="btn btn-primary btn-lg disabled">Run</button></a>
-                         
+                    </form>
                     <div class="alert alert-success" role="alert">
                         <a href="#" class="alert-link"> Stream Started. Check your spreadsheet </a>
                     </div>

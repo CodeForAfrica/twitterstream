@@ -32,3 +32,7 @@ RABBITMQ["host"] = os.getenv("RABBITMQ_HOST")
 RABBITMQ["vhost"] = os.getenv("RABBITMQ_VHOST")
 RABBITMQ["queue"] = os.getenv("RABBITMQ_QUEUE")
 RABBITMQ["credentials"] = os.getenv("RABBITMQ_CREDENTIALS")
+
+RECAPTCHA = {}
+RECAPTCHA["verify_url"] = "https://www.google.com/recaptcha/api/siteverify"
+RECAPTCHA["secret_key"] = os.getenv("RECAPTCHA_KEY")
