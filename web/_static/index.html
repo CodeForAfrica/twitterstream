@@ -40,17 +40,18 @@
 
         <!-- Jumbotron Header -->
         <header class="jumbotron hero-spacer text-center">
-            <h3>Twitterstream [Beta]: Harvest tweets from Twitter by user or hashtag</h3>
+        <h3>Twitterstream [Beta]: </h3>
+        <p>Harvest tweets from Twitter by user or hashtag</p>
         </header>
 
         <form action="{{ url_for('stream') }}">
         <div class="row">
             <div class="col-md-offset-2 col-lg-8 col-md-8 col-sm-12 col-md-offset-2">
                 <div class="input-group">
-                    <label for="basic-url">Hashtag to stream</label>
+                    <label for="basic-url">Hashtags to stream</label>
                     <div class="input-group">
                       <span class="input-group-addon" id="basic-addon3">#</span>
-                      <input type="text" class="form-control" name="hashtag" id="basic-url" aria-describedby="basic-addon3">
+                      <input type="text" class="form-control" name="hashtag" placeholder="#Bolt, #Rudisha, #Rio" id="basic-url" aria-describedby="basic-addon3">
                   </div>
 
                   <br clear="all">
@@ -105,7 +106,9 @@
             <div class="row">
                 <div class="col-lg-4 col-md-4 col-sm-12">
                     <p>Code For Africa Tech Labs (2016)</p>
+                    <p>Installation and usage guide <a href="https://github.com/CodeForAfricaLabs/twitterstream/blob/master/README.md" target="_blank">here</a></p>
                 </div>
+                <iframe src="https://ghbtns.com/github-btn.html?user=codeforafricalabs&repo=twitterstream&type=watch&count=true&size=large&v=2" frameborder="0" scrolling="0" width="160px" height="30px"></iframe>
                 <div class="col-md-offset-4 col-lg-4 col-md-4 col-sm-12">
                     <img src="assets/img/cfafrica-logo.png" height="50px"/>
                 </div>
