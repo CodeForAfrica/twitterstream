@@ -18,3 +18,11 @@ TW_AUTH_CREDENTIALS['cfktwstream']['access_token_secret'] = os.getenv('TW_ACCESS
 
 SENDER_ID = {}
 SENDER_ID['cfktwstream'] = ''
+
+GSPREAD_CONFIG = os.getenv("GSPREAD_AUTH")
+
+CACHE_HOST = os.getenv("MEMCACHE_HOST")
+
+SHEET_ID = "1H9lu9lrn3uu2vpX2bYadMp--LmfyrX257NMVHLJW3v0"
+
+USER_CAP = 10

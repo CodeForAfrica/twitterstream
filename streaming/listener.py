@@ -3,12 +3,20 @@ Stream listener
 """
 import tweepy
 import logging
-from twitterstream.config import TW_AUTH_CREDENTIALS
+import gspread
+import json
+import memcache
+from oauth2client.client import SignedJwtAssertionCredentials
+from twitterstream.config import TW_AUTH_CREDENTIALS, GSPREAD_CONFIG, CACHE_HOST, SHEET_ID, USER_CAP
 
 PRINCIPLE_TW_HANDLE = 'cfktwstream'
 
 LOGGERS = {}
 
+
+
+def get_cache():
+    return memcache.Client([CACHE_HOST], debug=1, socket_timeout=3)
 
 def get_api(auth_only=False):
     """
@@ -54,12 +62,17 @@ class Listener(tweepy.StreamListener):
     """
     instance of tweepy's StreamListener
     """
+    def __init__(self,):
+        tweepy.StreamListener.__init__(self)
+        self.rowcount = 1
+        self.r = GSPREADCLIENT 
 
-    def on_status(self, status):
+    def on_data(self, status):
         """
         do this when a status comes in
         """
         try:
+            '''
             payload = dict(
                       request_id=status.id,
                       created_at=status.created_at,
@@ -68,14 +81,34 @@ class Listener(tweepy.StreamListener):
                       avatar=status.user.profile_image_url.replace('_normal', ''),
                       message=str(status.text.encode('utf-8')),
                       saved="",
-                      source=status.source
+                      source=status.source,
                       )
-            logging.info(payload)
+                      '''
+            payload = json.loads(status)
+            #payload["text"].encode("utf-8")
+            #payload["user"]["screen_name"].encode("utf-8")
+            logging.info("{id} - {created_at} - %s - {text}".format(**payload) % payload["user"]["screen_name"])
+            self.r.update_acell("A%s" % str(self.rowcount), payload["created_at"])
+            self.r.update_acell("B%s" % str(self.rowcount), payload["user"]["screen_name"])
+            self.r.update_acell("C%s" % str(self.rowcount), payload["text"])
+            logging.info("Updated worksheet - %s" % payload["id"])
+
+            self.rowcount += 1
+            if self.rowcount >= USER_CAP:
+                logging.debug("Enough for now. Closing stream...")
+                return False
 
         except Exception, err:
-            logging.error('on_status -- {}'.format(str(err)))
+            logging.error('on_data -- {}'.format(str(err)))
 
 
+    
+    def keep_alive(self,):
+        logging.info("Heartbeat")
+
+    def on_limit(self, track):
+        logging.debug("WARNING: Rate limits: %s" % track)
+    
     def on_dropped_connection(self,):
         """
         do this when Twitter closes connection
@@ -90,3 +123,34 @@ class Listener(tweepy.StreamListener):
         if int(status_code) == 420:
             # handle rate limiting
             return False
+
+
+class Rows(object):
+    def __init__(self, sheet_id, worksheet="Sheet1"):
+        #self.logger = logger
+        self.scope = "https://spreadsheets.google.com/feeds"
+        self.sheet_id = sheet_id
+        self.worksheet = worksheet
+        self.writer = self._get_sheet()
+
+    def _get_sheet(self):
+        try:
+            print "AUTHENTICATING *********"
+            json_key = json.load(open(GSPREAD_CONFIG))
+            credentials = SignedJwtAssertionCredentials(
+                    json_key['client_email'],
+                    json_key['private_key'].encode(),
+                    self.scope)
+            gc = gspread.authorize(credentials)
+            sheet = gc.open_by_key(self.sheet_id)
+            worksheet = sheet.worksheet(self.worksheet)
+            return worksheet
+        except Exception, err:
+            #self.logger.error("Cannot open spreadsheet: %s" % str(err))
+            print "Cannot open spreadsheet: %s" % str(err)
+            raise err
+
+GSPREADCLIENT = Rows(SHEET_ID)._get_sheet()
+
+if __name__ == "__main__":
+    pass

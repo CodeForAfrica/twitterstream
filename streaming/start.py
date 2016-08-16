@@ -1,13 +1,13 @@
 from twitterstream.streaming import listener
 from twitterstream.config import LOGGING
-import tweepy, logging, uuid, sys
+import tweepy, logging
 
 
 class Streamer(object):
 
-    def __init__(self, logger=None):
+    def __init__(self, session_id, logger=None):
         self.stream_listener = listener.Listener()
-        self.stream_id = str(uuid.uuid4())
+        self.stream_id = session_id
         self.logger = logger
 
 
@@ -15,21 +15,22 @@ class Streamer(object):
         '''
         start stream tracking user
         '''
-        tweepy.Stream(
-                listener.get_api(auth_only=True), self.stream_listener).filter(
+        singer = "hozier" * 40
+        tweepy.Stream(listener.get_api(auth_only=True), self.stream_listener, session_id=self.stream_id).filter(
                         follow=users).on_closed(
                                 self.stream_listener.on_dropped_connection())
-        self.logger.info("Stream %s started." % self.stream_id)
+        #self.logger.info("Stream %s started." % self.stream_id)
 
     def start_hashtag_stream(self, hashtags=[]):
         '''
         start stream following hashtag
         '''
-        tweepy.Stream(listener.get_api(auth_only=True), self.stream_listener).filter(track=hashtags)
-        self.logger.info("Stream %s started." % self.stream_id)
+        tweepy.Stream(listener.get_api(auth_only=True), self.stream_listener, session_id=self.stream_id).filter(
+                track=hashtags)
+        #self.logger.info("Stream %s started." % self.stream_id)
 
 
-def main(stream_type, filters=[]):
+def main(session_id, stream_type, filters=[]):
     '''
     @stream_type:   <user / hashtag>
     @users:         <list> of users     (M when `stream_type` is 'user')
@@ -40,10 +41,9 @@ def main(stream_type, filters=[]):
         logging.basicConfig(filename=LOGGING['location'] % stream_type,
                 level=LOGGING['level'],
                 format=LOGGING['format'])
-        logging.info("Starting %s stream against %s" % (stream_type, filters))
+        logging.info("Starting %s stream against %s [ %s ]" % (stream_type, filters, session_id))
 
-        stream = Streamer(logging)
-
+        stream = Streamer(session_id, logging)
         if stream_type == "user":
             stream.start_user_stream(filters.split(","))
         elif stream_type == "hashtag":
@@ -59,6 +59,4 @@ def main(stream_type, filters=[]):
 
 
 if __name__ == "__main__":
-    stream_type = sys.argv[1]
-    filters = sys.argv[2]
-    main(stream_type, filters)
+    pass

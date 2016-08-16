@@ -90,3 +90,4 @@ ENV/
 
 #custom
 logs/*
+cfk-*.json
