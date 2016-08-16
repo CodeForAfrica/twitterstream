@@ -25,11 +25,17 @@ def counties():
     '''
     index.html
     '''
-    args = request.args.copy()
+    return render_template("index.html")
 
-        
-    return render_template("index.html",
-            )
+
+@app.route('/stream')
+def stream():
+    '''
+    '''
+    args = request.args.copy()
+    print args
+    print "*" * 30
+    return render_template("stream.html")
 
 
 manager = Manager(app)
