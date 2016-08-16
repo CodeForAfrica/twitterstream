@@ -6,14 +6,20 @@ import logging
 import gspread
 import json
 import memcache
+from celery import Celery
+from twitterstream import config
 from oauth2client.client import SignedJwtAssertionCredentials
 from twitterstream.config import TW_AUTH_CREDENTIALS, GSPREAD_CONFIG, CACHE_HOST, SHEET_ID, USER_CAP
 
+BROKER = "amqp://%s:%s@%s/%s" % (
+        config.RABBITMQ["credentials"].split(",")[0].strip(),
+        config.RABBITMQ["credentials"].split(",")[1].strip(),
+        config.RABBITMQ["host"].strip(),
+        config.RABBITMQ["vhost"].strip()
+        )
 PRINCIPLE_TW_HANDLE = 'cfktwstream'
-
 LOGGERS = {}
-
-
+celery_app = Celery(config.RABBITMQ["queue"], broker=BROKER)
 
 def get_cache():
     return memcache.Client([CACHE_HOST], debug=1, socket_timeout=3)
@@ -72,26 +78,11 @@ class Listener(tweepy.StreamListener):
         do this when a status comes in
         """
         try:
-            '''
-            payload = dict(
-                      request_id=status.id,
-                      created_at=status.created_at,
-                      sender_id=status.user.id,
-                      username=status.user.screen_name,
-                      avatar=status.user.profile_image_url.replace('_normal', ''),
-                      message=str(status.text.encode('utf-8')),
-                      saved="",
-                      source=status.source,
-                      )
-                      '''
             payload = json.loads(status)
             #payload["text"].encode("utf-8")
             #payload["user"]["screen_name"].encode("utf-8")
             logging.info("{id} - {created_at} - %s - {text}".format(**payload) % payload["user"]["screen_name"])
-            self.r.update_acell("A%s" % str(self.rowcount), payload["created_at"])
-            self.r.update_acell("B%s" % str(self.rowcount), payload["user"]["screen_name"])
-            self.r.update_acell("C%s" % str(self.rowcount), payload["text"])
-            logging.info("Updated worksheet - %s" % payload["id"])
+            publish.delay(payload, self.r, self.rowcount)
 
             self.rowcount += 1
             if self.rowcount >= USER_CAP:
@@ -151,6 +142,18 @@ class Rows(object):
             raise err
 
 GSPREADCLIENT = Rows(SHEET_ID)._get_sheet()
+
+
+@celery_app.task(name="twitterstream.streaming.listener.publish")
+def publish(payload, gspread_client, rownumber):
+    geo = payload.get("geo") or dict(coordinates=[0,0])
+    gspread_client.update_acell("A%s" % str(rownumber), payload["created_at"])
+    gspread_client.update_acell("B%s" % str(rownumber), payload["user"]["screen_name"])
+    gspread_client.update_acell("C%s" % str(rownumber), payload["text"])
+    gspread_client.update_acell("D%s" % str(rownumber), geo.get("coordinates")[0])
+    gspread_client.update_acell("E%s" % str(rownumber), geo.get("coordinates")[1])
+    print "Updated worksheet - %s" % payload["id"]
+
 
 if __name__ == "__main__":
     pass
