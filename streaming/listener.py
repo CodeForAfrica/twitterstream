@@ -143,7 +143,7 @@ class Rows(object):
             print "Cannot open spreadsheet: %s" % str(err)
             raise err
 
-GSPREADCLIENT = Rows(SHEET_ID)._get_sheet()
+GSPREADCLIENT = Rows(SHEET_ID, worksheet="Sheet2")._get_sheet()
 
 
 @celery_app.task(name="twitterstream.streaming.listener.publish")
