@@ -5,17 +5,16 @@ import tweepy, logging
 
 class Streamer(object):
 
-    def __init__(self, session_id, logger=None):
+    def __init__(self, session_id):
         self.stream_listener = listener.Listener()
         self.stream_id = session_id
-        self.logger = logger
+        #self.logger = logger
 
 
     def start_user_stream(self, users=[]):
         '''
         start stream tracking user
         '''
-        singer = "hozier" * 40
         tweepy.Stream(listener.get_api(auth_only=True), self.stream_listener, session_id=self.stream_id).filter(
                         follow=users).on_closed(
                                 self.stream_listener.on_dropped_connection())
@@ -25,8 +24,7 @@ class Streamer(object):
         '''
         start stream following hashtag
         '''
-        tweepy.Stream(listener.get_api(auth_only=True), self.stream_listener, session_id=self.stream_id).filter(
-                track=hashtags)
+        tweepy.Stream(listener.get_api(auth_only=True), self.stream_listener, session_id=self.stream_id).filter( track=hashtags)
         #self.logger.info("Stream %s started." % self.stream_id)
 
 
@@ -37,16 +35,20 @@ def main(session_id, stream_type, filters=[]):
     @hashtags:      <list> of hashtags  (M when `stream_type` is 'hashtag')
     '''
     try:
-        print "Creating logger..."
+        assert stream_type in ["hashtag", "user"]
+        print "Creating logger... %s - %s - %s" % (session_id, stream_type, filters)
         logging.basicConfig(filename=LOGGING['location'] % stream_type,
                 level=LOGGING['level'],
                 format=LOGGING['format'])
         logging.info("Starting %s stream against %s [ %s ]" % (stream_type, filters, session_id))
 
-        stream = Streamer(session_id, logging)
+
+        stream = Streamer(session_id)
         if stream_type == "user":
             stream.start_user_stream(filters.split(","))
         elif stream_type == "hashtag":
+            print filters.split(",")
+            print "==" * 20
             stream.start_hashtag_stream(filters.split(","))
 
     except AssertionError:

@@ -5,3 +5,5 @@ pyopenssl
 python-memcached
 Flask
 Flask-Script
+pika
+celery
