@@ -36,3 +36,7 @@ The aim of this project is to make content on Twitter easily accessible for data
 * Select the filter type: 'hashtag' or 'user'
 * Enter the hashtag / user to track and hit `Run`
 * Open your spreadsheet and watch the magic :raised_hands:
+
+
+## Obligatory GIF
+![](https://media.giphy.com/media/mE5AM0F8bSXMQ/giphy.gif)
