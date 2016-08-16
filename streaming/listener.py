@@ -10,6 +10,8 @@ from celery import Celery
 from twitterstream import config
 from oauth2client.client import SignedJwtAssertionCredentials
 from twitterstream.config import TW_AUTH_CREDENTIALS, GSPREAD_CONFIG, CACHE_HOST, SHEET_ID, USER_CAP
+from twitterstream.config import LOGGING
+import tweepy, logging
 
 BROKER = "amqp://%s:%s@%s/%s" % (
         config.RABBITMQ["credentials"].split(",")[0].strip(),
@@ -155,6 +157,62 @@ def publish(payload, gspread_client, rownumber):
     gspread_client.update_acell("D%s" % str(rownumber), geo.get("coordinates")[0])
     gspread_client.update_acell("E%s" % str(rownumber), geo.get("coordinates")[1])
     print "Updated worksheet - %s" % payload["id"]
+
+
+class Streamer(object):
+
+    def __init__(self, session_id):
+        self.stream_listener = Listener()
+        self.stream_id = session_id
+        #self.logger = logger
+
+
+    def start_user_stream(self, users=[]):
+        '''
+        start stream tracking user
+        '''
+        tweepy.Stream(get_api(auth_only=True), self.stream_listener, session_id=self.stream_id).filter(
+                        follow=users).on_closed(
+                                self.stream_listener.on_dropped_connection())
+        #self.logger.info("Stream %s started." % self.stream_id)
+
+    def start_hashtag_stream(self, hashtags=[]):
+        '''
+        start stream following hashtag
+        '''
+        tweepy.Stream(get_api(auth_only=True), self.stream_listener, session_id=self.stream_id).filter(track=hashtags)
+        #self.logger.info("Stream %s started." % self.stream_id)
+
+
+def main(session_id, stream_type, filters=[]):
+    '''
+    @stream_type:   <user / hashtag>
+    @users:         <list> of users     (M when `stream_type` is 'user')
+    @hashtags:      <list> of hashtags  (M when `stream_type` is 'hashtag')
+    '''
+    try:
+        assert stream_type in ["hashtag", "user"]
+        print "Creating logger... %s - %s - %s" % (session_id, stream_type, filters)
+        logging.basicConfig(filename=LOGGING['location'] % stream_type,
+                level=LOGGING['level'],
+                format=LOGGING['format'])
+        logging.info("Starting %s stream against %s [ %s ]" % (stream_type, filters, session_id))
+
+
+        stream = Streamer(session_id)
+        if stream_type == "user":
+            stream.start_user_stream(filters.split(","))
+        elif stream_type == "hashtag":
+            print filters.split(",")
+            print "==" * 20
+            stream.start_hashtag_stream(filters.split(","))
+
+    except AssertionError:
+        print "ERROR: Invalid stream_type %s. Expects: ['user', 'hashtag']" % stream_type
+        raise AssertionError
+    except Exception, err:
+        print "ERROR: %s" % err
+        raise err
 
 
 if __name__ == "__main__":
