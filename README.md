@@ -1,4 +1,5 @@
-# twitterstream is a tool that streams real-time content from Twitter and channels it into a Google Spreadsheet. `twitterstream` can be started and controlled via a web interface, or the command line.
+## Summary
+`twitterstream` is a tool that streams real-time content from Twitter and channels it into a Google Spreadsheet. `twitterstream` can be started and controlled via a [web interface](https://twitterstream.codeforafrica.tech/), or the command line.
 
 ## Use case
 For data wranglers, analysts, and developers, data on structured, open, and standard formats (such as `xls` or `csv`) is far more useful and malleable than unstructured sources.
