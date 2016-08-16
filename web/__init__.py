@@ -21,11 +21,11 @@ def get_redis():
 
 
 @app.route('/')
-def counties():
+def home():
     '''
     index.html
     '''
-    return render_template("index.html")
+    return render_template("index.html", source="home")
 
 
 @app.route('/stream')
@@ -35,7 +35,7 @@ def stream():
     args = request.args.copy()
     print args
     print "*" * 30
-    return render_template("stream.html")
+    return render_template("index.html", source="stream")
 
 
 manager = Manager(app)
