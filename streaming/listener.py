@@ -146,7 +146,9 @@ GSPREADCLIENT = Rows(SHEET_ID)._get_sheet()
 
 @celery_app.task(name="twitterstream.streaming.listener.publish")
 def publish(payload, gspread_client, rownumber):
-    geo = payload.get("geo") or dict(coordinates=[0,0])
+    geo = payload.get("geo")
+    if not geo:
+        geo = dict(coordinates=[0,0])
     gspread_client.update_acell("A%s" % str(rownumber), payload["created_at"])
     gspread_client.update_acell("B%s" % str(rownumber), payload["user"]["screen_name"])
     gspread_client.update_acell("C%s" % str(rownumber), payload["text"])
