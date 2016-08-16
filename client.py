@@ -27,5 +27,5 @@ if __name__ == "__main__":
     #filters = sys.argv[2]
     #sheet_id = sys.argv[3]
     #spawn_child(stream_type, filters, sheet_id)
-    spawn_child("hashtag", "olympics,rio,JustinDeactivatedParty,CanoagemVelocidade,BuenMartes,all324", config.SHEET_ID)
+    spawn_child("hashtag", "olympics,rio", config.SHEET_ID)
     #spawn_child("user", "1237372231", config.SHEET_ID)
