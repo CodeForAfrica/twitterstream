@@ -72,7 +72,7 @@ class Listener(tweepy.StreamListener):
     """
     def __init__(self,):
         tweepy.StreamListener.__init__(self)
-        self.rowcount = 1
+        self.rowcount = 2
         self.r = GSPREADCLIENT 
 
     def on_data(self, status):
@@ -156,6 +156,9 @@ def publish(payload, gspread_client, rownumber):
     gspread_client.update_acell("C%s" % str(rownumber), payload["text"])
     gspread_client.update_acell("D%s" % str(rownumber), geo.get("coordinates")[0])
     gspread_client.update_acell("E%s" % str(rownumber), geo.get("coordinates")[1])
+    gspread_client.update_acell("F%s" % str(rownumber), payload.get("retweet_count"))
+    gspread_client.update_acell("G%s" % str(rownumber), payload.get("source"))
+    gspread_client.update_acell("H%s" % str(rownumber), payload.get("source"))
     print "Updated worksheet - %s" % payload["id"]
 
 
