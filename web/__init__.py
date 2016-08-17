@@ -45,7 +45,7 @@ def stream():
     resp.raise_for_status()
     if resp.json()["success"]:
         filters = args["hashtag"]
-        spawn_child("hashtag", args["hashtag"], app.config["SHEET_ID"])
+        spawn_child("hashtag", str(args["hashtag"]), app.config["SHEET_ID"])
         
         return render_template("index.html", source="stream")
     else:
