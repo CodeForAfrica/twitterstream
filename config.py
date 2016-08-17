@@ -25,7 +25,7 @@ CACHE_HOST = os.getenv("MEMCACHE_HOST")
 
 SHEET_ID = "1H9lu9lrn3uu2vpX2bYadMp--LmfyrX257NMVHLJW3v0"
 
-USER_CAP = 10
+USER_CAP = 100
 
 RABBITMQ = {}
 RABBITMQ["host"] = os.getenv("RABBITMQ_HOST")
