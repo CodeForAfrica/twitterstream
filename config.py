@@ -23,7 +23,7 @@ GSPREAD_CONFIG = os.getenv("GSPREAD_AUTH")
 
 CACHE_HOST = os.getenv("MEMCACHE_HOST")
 
-SHEET_ID = "1H9lu9lrn3uu2vpX2bYadMp--LmfyrX257NMVHLJW3v0"
+DEFAULT_SPREADSHEET_ID = "1H9lu9lrn3uu2vpX2bYadMp--LmfyrX257NMVHLJW3v0"
 
 USER_CAP = 10
 
@@ -39,4 +39,4 @@ RECAPTCHA["secret_key"] = os.getenv("RECAPTCHA_KEY")
 
 TIMEOUTS = {}
 TIMEOUTS["recaptcha"] = 5
-TIMEOUTS["googlesheets"] = 5
+TIMEOUTS["googlesheets"] = 15
